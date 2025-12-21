@@ -1,0 +1,128 @@
+ARM GAS  /tmp/cc3wKkEk.s 			page 1
+
+
+   1              		.cpu cortex-m0
+   2              		.arch armv6s-m
+   3              		.fpu softvfp
+   4              		.eabi_attribute 20, 1
+   5              		.eabi_attribute 21, 1
+   6              		.eabi_attribute 23, 3
+   7              		.eabi_attribute 24, 1
+   8              		.eabi_attribute 25, 1
+   9              		.eabi_attribute 26, 1
+  10              		.eabi_attribute 30, 1
+  11              		.eabi_attribute 34, 0
+  12              		.eabi_attribute 18, 4
+  13              		.file	"tests.c"
+  14              		.text
+  15              	.Ltext0:
+  16              		.cfi_sections	.debug_frame
+  17              		.file 1 "Core/Src/tests.c"
+  18              		.section	.text.onboard_led_init,"ax",%progbits
+  19              		.align	1
+  20              		.global	onboard_led_init
+  21              		.syntax unified
+  22              		.code	16
+  23              		.thumb_func
+  25              	onboard_led_init:
+  26              	.LFB40:
+   1:Core/Src/tests.c **** #include "tests.h"
+   2:Core/Src/tests.c **** #include <main.h>
+   3:Core/Src/tests.c **** 
+   4:Core/Src/tests.c **** void onboard_led_init() {
+  27              		.loc 1 4 25 view -0
+  28              		.cfi_startproc
+  29              		@ args = 0, pretend = 0, frame = 0
+  30              		@ frame_needed = 0, uses_anonymous_args = 0
+  31              		@ link register save eliminated.
+   5:Core/Src/tests.c ****   RCC->AHBENR |= RCC_AHBENR_GPIOBEN;
+  32              		.loc 1 5 3 view .LVU1
+  33              		.loc 1 5 6 is_stmt 0 view .LVU2
+  34 0000 074A     		ldr	r2, .L2
+  35 0002 5169     		ldr	r1, [r2, #20]
+  36              		.loc 1 5 15 view .LVU3
+  37 0004 8023     		movs	r3, #128
+  38 0006 DB02     		lsls	r3, r3, #11
+  39 0008 0B43     		orrs	r3, r1
+  40 000a 5361     		str	r3, [r2, #20]
+   6:Core/Src/tests.c ****   GPIOB->MODER &= (3U << (3 * 2));
+  41              		.loc 1 6 3 is_stmt 1 view .LVU4
+  42              		.loc 1 6 8 is_stmt 0 view .LVU5
+  43 000c 054B     		ldr	r3, .L2+4
+  44 000e 1968     		ldr	r1, [r3]
+  45              		.loc 1 6 16 view .LVU6
+  46 0010 C022     		movs	r2, #192
+  47 0012 0A40     		ands	r2, r1
+  48 0014 1A60     		str	r2, [r3]
+   7:Core/Src/tests.c ****   GPIOB->MODER |= (1U << (3 * 2));
+  49              		.loc 1 7 3 is_stmt 1 view .LVU7
+  50              		.loc 1 7 8 is_stmt 0 view .LVU8
+  51 0016 1A68     		ldr	r2, [r3]
+ARM GAS  /tmp/cc3wKkEk.s 			page 2
+
+
+  52              		.loc 1 7 16 view .LVU9
+  53 0018 4021     		movs	r1, #64
+  54 001a 0A43     		orrs	r2, r1
+  55 001c 1A60     		str	r2, [r3]
+   8:Core/Src/tests.c **** }
+  56              		.loc 1 8 1 view .LVU10
+  57              		@ sp needed
+  58 001e 7047     		bx	lr
+  59              	.L3:
+  60              		.align	2
+  61              	.L2:
+  62 0020 00100240 		.word	1073876992
+  63 0024 00040048 		.word	1207960576
+  64              		.cfi_endproc
+  65              	.LFE40:
+  67              		.section	.text.onboard_led_toggle,"ax",%progbits
+  68              		.align	1
+  69              		.global	onboard_led_toggle
+  70              		.syntax unified
+  71              		.code	16
+  72              		.thumb_func
+  74              	onboard_led_toggle:
+  75              	.LFB41:
+   9:Core/Src/tests.c **** 
+  10:Core/Src/tests.c **** void onboard_led_toggle() { GPIOB->ODR ^= (1U << 3); }
+  76              		.loc 1 10 27 is_stmt 1 view -0
+  77              		.cfi_startproc
+  78              		@ args = 0, pretend = 0, frame = 0
+  79              		@ frame_needed = 0, uses_anonymous_args = 0
+  80              		@ link register save eliminated.
+  81              		.loc 1 10 29 view .LVU12
+  82              		.loc 1 10 34 is_stmt 0 view .LVU13
+  83 0000 024A     		ldr	r2, .L5
+  84 0002 5369     		ldr	r3, [r2, #20]
+  85              		.loc 1 10 40 view .LVU14
+  86 0004 0821     		movs	r1, #8
+  87 0006 4B40     		eors	r3, r1
+  88 0008 5361     		str	r3, [r2, #20]
+  89              		.loc 1 10 54 view .LVU15
+  90              		@ sp needed
+  91 000a 7047     		bx	lr
+  92              	.L6:
+  93              		.align	2
+  94              	.L5:
+  95 000c 00040048 		.word	1207960576
+  96              		.cfi_endproc
+  97              	.LFE41:
+  99              		.text
+ 100              	.Letext0:
+ 101              		.file 2 "/opt/gcc-arm-none-eabi/arm-none-eabi/include/machine/_default_types.h"
+ 102              		.file 3 "/opt/gcc-arm-none-eabi/arm-none-eabi/include/sys/_stdint.h"
+ 103              		.file 4 "Drivers/CMSIS/Device/ST/STM32F0xx/Include/stm32f042x6.h"
+ARM GAS  /tmp/cc3wKkEk.s 			page 3
+
+
+DEFINED SYMBOLS
+                            *ABS*:00000000 tests.c
+     /tmp/cc3wKkEk.s:19     .text.onboard_led_init:00000000 $t
+     /tmp/cc3wKkEk.s:25     .text.onboard_led_init:00000000 onboard_led_init
+     /tmp/cc3wKkEk.s:62     .text.onboard_led_init:00000020 $d
+     /tmp/cc3wKkEk.s:68     .text.onboard_led_toggle:00000000 $t
+     /tmp/cc3wKkEk.s:74     .text.onboard_led_toggle:00000000 onboard_led_toggle
+     /tmp/cc3wKkEk.s:95     .text.onboard_led_toggle:0000000c $d
+
+NO UNDEFINED SYMBOLS
