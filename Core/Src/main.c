@@ -1,4 +1,5 @@
 #include "main.h"
+#include "i2c.h"
 #include "stm32f0xx_hal.h"
 #include "tests.h"
 
@@ -10,9 +11,12 @@ int main(void) {
   SystemClock_Config();
 
   onboard_led_init();
+  i2c_init();
+  i2c_send();
 
   while (1) {
     onboard_led_toggle();
+
     HAL_Delay(500);
   }
 }

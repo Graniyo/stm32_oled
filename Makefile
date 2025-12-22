@@ -56,6 +56,7 @@ Core/Src/system_stm32f0xx.c \
 Core/Src/sysmem.c \
 Core/Src/syscalls.c \
 Core/Src/tests.c \
+Core/Src/i2c.c \
 
 # ASM sources
 ASM_SOURCES =  \
