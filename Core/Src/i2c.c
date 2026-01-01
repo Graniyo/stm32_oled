@@ -2,6 +2,7 @@
 #include "stm32f042x6.h"
 #include <main.h>
 #include <stdint.h>
+#include <sys/types.h>
 
 // Init PB7 & PB6 for I2C
 void i2c_init() {
@@ -41,37 +42,39 @@ void i2c_init() {
   I2C1->CR1 |= I2C_CR1_PE;
 }
 
-void i2c_send() {
-  // Slave address (address of slave chip etc. oled ssd1306)
-  I2C1->CR2 |= (0x3C << 1);
+void clear_flags() { I2C1->ICR = I2C_ICR_STOPCF | I2C_ICR_NACKCF; }
 
-  // Choose send or recieve (Send in this case)
-  I2C1->CR2 &= ~(I2C_CR2_RD_WRN);
+void i2c_send(uint8_t address, uint8_t data[], uint8_t length)
+{
+    while (I2C1->ISR & I2C_ISR_BUSY) { }
 
-  // Nbytes to send
-  I2C1->CR2 |= (1 << 16);
+    clear_flags(); // bør skrive til ICR, ikke ISR
 
-  // Send start condition
-  I2C1->CR2 |= I2C_CR2_START;
+    // Clear felter vi setter (felt, ikke *_Pos)
+    I2C1->CR2 &= ~(I2C_CR2_SADD | I2C_CR2_NBYTES | I2C_CR2_RD_WRN |
+                  I2C_CR2_RELOAD | I2C_CR2_AUTOEND);
 
-  // Make sure I2C is not busy by reading the start bit
-  while (I2C1->CR2 & I2C_CR2_START)
-    ;
+    // Sett adresse + nbytes + write + autoend
+    // NB: vurder (address << 1) hvis du ikke får ACK (STM32F0-adresseplassering)
+    I2C1->CR2 |= ((uint32_t)(address << 1) << I2C_CR2_SADD_Pos);
+    I2C1->CR2 |= ((uint32_t)length << I2C_CR2_NBYTES_Pos);
+    I2C1->CR2 |= I2C_CR2_AUTOEND;     // stop automatisk etter NBYTES
 
-  // Data to send
-  I2C1->TXDR = COMMAND;
+    // Start
+    I2C1->CR2 |= I2C_CR2_START;
 
-  // Wait until data is sent
-  while (!(I2C1->ISR & I2C_ISR_TXE))
-    ;
+    for (uint8_t i = 0; i < length; i++) {
 
-  I2C1->TXDR = INVERT;
-  while (!(I2C1->ISR & I2C_ISR_TXE))
+        while (!(I2C1->ISR & I2C_ISR_TXIS)) {
+            if (I2C1->ISR & I2C_ISR_NACKF) {
+                I2C1->ICR = I2C_ICR_NACKCF;
+                return;
+            }
+        }
 
-    // Send stop condition
-    I2C1->CR2 |= I2C_CR2_STOP;
+        I2C1->TXDR = data[i];
+    }
 
-  // Wait until stop condition is sent
-  while (I2C1->CR2 & I2C_CR2_STOP)
-    ;
+    while (!(I2C1->ISR & I2C_ISR_STOPF)) { }
+    I2C1->ICR = I2C_ICR_STOPCF;
 }
