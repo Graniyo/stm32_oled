@@ -57,6 +57,30 @@ Core/Src/sysmem.c \
 Core/Src/syscalls.c \
 Core/Src/tests.c \
 Core/Src/i2c.c \
+Core/Src/delay.c \
+Core/Src/u8g2_port.c \
+Drivers/u8g2/csrc/u8g2_buffer.c \
+Drivers/u8g2/csrc/u8g2_setup.c \
+Drivers/u8g2/csrc/u8g2_cleardisplay.c \
+Drivers/u8g2/csrc/u8g2_message.c \
+Drivers/u8g2/csrc/u8g2_d_memory.c \
+Drivers/u8g2/csrc/u8g2_box.c \
+Drivers/u8g2/csrc/u8g2_font.c \
+Drivers/u8g2/csrc/u8g2_fonts.c \
+Drivers/u8g2/csrc/u8x8_display.c \
+Drivers/u8g2/csrc/u8x8_setup.c \
+Drivers/u8g2/csrc/u8x8_byte.c \
+Drivers/u8g2/csrc/u8x8_gpio.c \
+Drivers/u8g2/csrc/u8x8_d_ssd1306_128x64_noname.c \
+Drivers/u8g2/csrc/u8x8_message.c \
+Drivers/u8g2/csrc/u8g2_d_setup.c \
+Drivers/u8g2/csrc/u8g2_intersection.c \
+Drivers/u8g2/csrc/u8g2_hvline.c \
+Drivers/u8g2/csrc/u8g2_ll_hvline.c \
+Drivers/u8g2/csrc/u8g2_line.c \
+Drivers/u8g2/csrc/u8x8_cad.c \
+Drivers/u8g2/csrc/u8x8_8x8.c \
+
 
 # ASM sources
 ASM_SOURCES =  \
@@ -121,7 +145,8 @@ C_INCLUDES =  \
 -IDrivers/STM32F0xx_HAL_Driver/Inc \
 -IDrivers/STM32F0xx_HAL_Driver/Inc/Legacy \
 -IDrivers/CMSIS/Device/ST/STM32F0xx/Include \
--IDrivers/CMSIS/Include
+-IDrivers/CMSIS/Include \
+-IDrivers/u8g2/csrc \
 
 
 # compile gcc flags

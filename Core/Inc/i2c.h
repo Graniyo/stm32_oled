@@ -1,5 +1,4 @@
 #include <stdint.h>
-
 #define DISPLAY_ON 0xAF
 #define DISPLAY_OFF 0xAE
 #define INVERT 0xA7
@@ -9,3 +8,8 @@
 void i2c_init(void);
 void clear_flags();
 void i2c_send(uint8_t address, uint8_t data[], uint8_t length);
+
+// Streaming I2C functions for u8g2
+void i2c_start_write(uint8_t address);
+void i2c_write(uint8_t *data, uint8_t len);
+void i2c_stop(void);

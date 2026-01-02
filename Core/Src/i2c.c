@@ -84,3 +84,61 @@ void i2c_send(uint8_t address, uint8_t data[], uint8_t length) {
   }
   I2C1->ICR = I2C_ICR_STOPCF;
 }
+
+// Streaming I2C functions for u8g2
+// Uses RELOAD mode to allow byte-by-byte transmission within a single transaction
+
+void i2c_start_write(uint8_t address) {
+  // Wait until bus is not busy
+  while (I2C1->ISR & I2C_ISR_BUSY);
+
+  // Clear STOP and NACK flags
+  I2C1->ICR = I2C_ICR_STOPCF | I2C_ICR_NACKCF;
+
+  // Configure: address, RELOAD=1, AUTOEND=0, NBYTES=1
+  I2C1->CR2 = ((uint32_t)(address << 1) << I2C_CR2_SADD_Pos)
+            | I2C_CR2_RELOAD
+            | (1 << I2C_CR2_NBYTES_Pos);
+
+  // Generate START
+  I2C1->CR2 |= I2C_CR2_START;
+}
+
+void i2c_write(uint8_t *data, uint8_t len) {
+  for (uint8_t i = 0; i < len; i++) {
+    // Wait for TXIS, handling TCR (reload request) while waiting
+    while (!(I2C1->ISR & I2C_ISR_TXIS)) {
+      // If TCR is set, previous byte finished - reload NBYTES
+      if (I2C1->ISR & I2C_ISR_TCR) {
+        I2C1->CR2 = (I2C1->CR2 & ~I2C_CR2_NBYTES) | (1 << I2C_CR2_NBYTES_Pos);
+      }
+      if (I2C1->ISR & I2C_ISR_NACKF) {
+        I2C1->ICR = I2C_ICR_NACKCF;
+        return;
+      }
+    }
+
+    // Write byte
+    I2C1->TXDR = data[i];
+  }
+}
+
+void i2c_stop(void) {
+  // Wait for TCR (last byte transmitted, reload pending)
+  while (!(I2C1->ISR & I2C_ISR_TCR)) {
+    if (I2C1->ISR & I2C_ISR_NACKF) {
+      I2C1->ICR = I2C_ICR_NACKCF;
+      break;
+    }
+  }
+
+  // Clear RELOAD and set NBYTES=0 to end transfer
+  I2C1->CR2 &= ~(I2C_CR2_RELOAD | I2C_CR2_NBYTES);
+
+  // Generate STOP
+  I2C1->CR2 |= I2C_CR2_STOP;
+
+  // Wait for STOP to complete
+  while (!(I2C1->ISR & I2C_ISR_STOPF));
+  I2C1->ICR = I2C_ICR_STOPCF;
+}
