@@ -1,46 +1,53 @@
+#include <stdio.h>
 #include "main.h"
 #include "i2c.h"
 #include "stm32f0xx_hal.h"
 #include "tests.h"
 #include "u8g2_port.h"
 #include "u8g2.h"
+#include "delay.h"
+#include "DHT22.h"
 
 void SystemClock_Config(void);
 
 int main(void) {
-
-  HAL_Init();
+  //HAL_Init();
   SystemClock_Config();
-
   onboard_led_init();
   i2c_init();
-
+  tim2_init_1mhz();
   u8g2_t *u8g2 = u8g2_port_init();
 
   // Get text width for smooth wrapping
   u8g2_SetFont(u8g2, u8g2_font_helvB12_tr);
   const char *text = "Martin Grani";
   int16_t text_width = u8g2_GetStrWidth(u8g2, text);
-  int16_t x = 128;  // Start off-screen right
+  uint16_t middle_screen_pos = (128/2) - (text_width/2);
+
+  uint32_t start = 0;
+  uint32_t stop = 0;
+  char buf[16];
+
+  u8g2_ClearBuffer(u8g2);
+  u8g2_DrawStr(u8g2, middle_screen_pos, 38, text);
+  u8g2_SendBuffer(u8g2);
+
+
+
 
   while (1) {
-    u8g2_ClearBuffer(u8g2);
 
-    // Draw text centered vertically
-    u8g2_DrawStr(u8g2, x, 38, text);
+    start = micros();
+    //bare_delay_us(5000);
+    onboard_led_toggle();
+    u8g2_ClearBuffer(u8g2);
+    snprintf(buf, sizeof(buf), "t = %lu us", (unsigned long)micros());
+    text_width = u8g2_GetStrWidth(u8g2, buf);
+    middle_screen_pos = (128/2) - (text_width/2);
+
+    u8g2_DrawStr(u8g2, middle_screen_pos, 38, buf);
 
     u8g2_SendBuffer(u8g2);
-
-    // Move text left
-    x -= 5;
-
-    // Reset when fully scrolled off left
-    if (x < -text_width) {
-      x = 128;
-    }
-
-    onboard_led_toggle();
-    HAL_Delay(30);
   }
 }
 

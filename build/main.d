@@ -23,7 +23,7 @@ build/main.o: Core/Src/main.c Core/Inc/main.h \
  Drivers/STM32F0xx_HAL_Driver/Inc/stm32f0xx_hal_pwr.h \
  Drivers/STM32F0xx_HAL_Driver/Inc/stm32f0xx_hal_pwr_ex.h Core/Inc/i2c.h \
  Core/Inc/tests.h Core/Inc/u8g2_port.h Drivers/u8g2/csrc/u8g2.h \
- Drivers/u8g2/csrc/u8x8.h
+ Drivers/u8g2/csrc/u8x8.h Core/Inc/delay.h Core/Inc/DHT22.h
 Core/Inc/main.h:
 Drivers/STM32F0xx_HAL_Driver/Inc/stm32f0xx_hal.h:
 Core/Inc/stm32f0xx_hal_conf.h:
@@ -55,3 +55,5 @@ Core/Inc/tests.h:
 Core/Inc/u8g2_port.h:
 Drivers/u8g2/csrc/u8g2.h:
 Drivers/u8g2/csrc/u8x8.h:
+Core/Inc/delay.h:
+Core/Inc/DHT22.h:

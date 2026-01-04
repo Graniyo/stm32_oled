@@ -1,4 +1,4 @@
-ARM GAS  /tmp/ccDdqPoA.s 			page 1
+ARM GAS  /tmp/ccfc2z7L.s 			page 1
 
 
    1              		.cpu cortex-m0
@@ -58,7 +58,7 @@ ARM GAS  /tmp/ccDdqPoA.s 			page 1
   11:Core/Src/i2c.c **** 
   12:Core/Src/i2c.c ****   // Write 10 for AF on GPIOB PIN 7 & PIN 6 into MODER
   13:Core/Src/i2c.c ****   GPIOB->MODER |= (1U << 13);
-ARM GAS  /tmp/ccDdqPoA.s 			page 2
+ARM GAS  /tmp/ccfc2z7L.s 			page 2
 
 
   46              		.loc 1 13 3 is_stmt 1 view .LVU4
@@ -118,7 +118,7 @@ ARM GAS  /tmp/ccDdqPoA.s 			page 1
   23:Core/Src/i2c.c ****   GPIOB->OSPEEDR &= ~(1U << 12);
   91              		.loc 1 23 3 is_stmt 1 view .LVU22
   92              		.loc 1 23 8 is_stmt 0 view .LVU23
-ARM GAS  /tmp/ccDdqPoA.s 			page 3
+ARM GAS  /tmp/ccfc2z7L.s 			page 3
 
 
   93 0044 9968     		ldr	r1, [r3, #8]
@@ -178,7 +178,7 @@ ARM GAS  /tmp/ccDdqPoA.s 			page 1
  134              		.loc 1 36 3 is_stmt 1 view .LVU42
  135              		.loc 1 36 6 is_stmt 0 view .LVU43
  136 0072 D169     		ldr	r1, [r2, #28]
-ARM GAS  /tmp/ccDdqPoA.s 			page 4
+ARM GAS  /tmp/ccfc2z7L.s 			page 4
 
 
  137              		.loc 1 36 16 view .LVU44
@@ -238,7 +238,7 @@ ARM GAS  /tmp/ccDdqPoA.s 			page 1
  184              		@ link register save eliminated.
   46:Core/Src/i2c.c ****   // Clear command flags that may hinder transfer\reiceive
   47:Core/Src/i2c.c ****   I2C1->ICR = I2C_ICR_STOPCF | I2C_ICR_NACKCF; 
-ARM GAS  /tmp/ccDdqPoA.s 			page 5
+ARM GAS  /tmp/ccfc2z7L.s 			page 5
 
 
  185              		.loc 1 47 3 view .LVU52
@@ -298,7 +298,7 @@ ARM GAS  /tmp/ccDdqPoA.s 			page 1
   55:Core/Src/i2c.c ****   clear_flags(); 
  234              		.loc 1 55 3 is_stmt 1 view .LVU61
  235 0010 FFF7FEFF 		bl	clear_flags
-ARM GAS  /tmp/ccDdqPoA.s 			page 6
+ARM GAS  /tmp/ccfc2z7L.s 			page 6
 
 
  236              	.LVL1:
@@ -358,7 +358,7 @@ ARM GAS  /tmp/ccDdqPoA.s 			page 1
   68:Core/Src/i2c.c **** 
   69:Core/Src/i2c.c ****   // End if NACK received from slave. Check if TXDR is empty (previous data is sent). Place data in
   70:Core/Src/i2c.c ****   for (uint8_t i = 0; i < length; i++) {
-ARM GAS  /tmp/ccDdqPoA.s 			page 7
+ARM GAS  /tmp/ccfc2z7L.s 			page 7
 
 
  278              		.loc 1 70 3 is_stmt 1 view .LVU79
@@ -418,7 +418,7 @@ ARM GAS  /tmp/ccDdqPoA.s 			page 1
  316              	.LVL6:
  317              	.LVL7:
  318              		.loc 1 86 1 view .LVU94
-ARM GAS  /tmp/ccDdqPoA.s 			page 8
+ARM GAS  /tmp/ccfc2z7L.s 			page 8
 
 
  319 005e 70BD     		pop	{r4, r5, r6, pc}
@@ -478,7 +478,7 @@ ARM GAS  /tmp/ccDdqPoA.s 			page 1
  360              		.cfi_endproc
  361              	.LFE42:
  363              		.section	.text.i2c_start_write,"ax",%progbits
-ARM GAS  /tmp/ccDdqPoA.s 			page 9
+ARM GAS  /tmp/ccfc2z7L.s 			page 9
 
 
  364              		.align	1
@@ -538,7 +538,7 @@ ARM GAS  /tmp/ccDdqPoA.s 			page 1
  400              		.loc 1 104 3 is_stmt 1 view .LVU118
  401              		.loc 1 104 7 is_stmt 0 view .LVU119
  402 0016 5968     		ldr	r1, [r3, #4]
-ARM GAS  /tmp/ccDdqPoA.s 			page 10
+ARM GAS  /tmp/ccfc2z7L.s 			page 10
 
 
  403              		.loc 1 104 13 view .LVU120
@@ -598,7 +598,7 @@ ARM GAS  /tmp/ccDdqPoA.s 			page 1
  111:Core/Src/i2c.c ****       // If TCR is set, previous byte finished - reload NBYTES
  112:Core/Src/i2c.c ****       if (I2C1->ISR & I2C_ISR_TCR) {
  113:Core/Src/i2c.c ****         I2C1->CR2 = (I2C1->CR2 & ~I2C_CR2_NBYTES) | (1 << I2C_CR2_NBYTES_Pos);
-ARM GAS  /tmp/ccDdqPoA.s 			page 11
+ARM GAS  /tmp/ccfc2z7L.s 			page 11
 
 
  114:Core/Src/i2c.c ****       }
@@ -658,7 +658,7 @@ ARM GAS  /tmp/ccDdqPoA.s 			page 1
  493 0036 1022     		movs	r2, #16
  494              	.LVL17:
  495              		.loc 1 116 19 view .LVU144
-ARM GAS  /tmp/ccDdqPoA.s 			page 12
+ARM GAS  /tmp/ccfc2z7L.s 			page 12
 
 
  496 0038 DA61     		str	r2, [r3, #28]
@@ -718,7 +718,7 @@ ARM GAS  /tmp/ccDdqPoA.s 			page 1
  537              		.cfi_startproc
  538              		@ args = 0, pretend = 0, frame = 0
  539              		@ frame_needed = 0, uses_anonymous_args = 0
-ARM GAS  /tmp/ccDdqPoA.s 			page 13
+ARM GAS  /tmp/ccfc2z7L.s 			page 13
 
 
  540              		@ link register save eliminated.
@@ -778,7 +778,7 @@ ARM GAS  /tmp/ccDdqPoA.s 			page 1
  141:Core/Src/i2c.c ****   // Wait for STOP to complete
  142:Core/Src/i2c.c ****   while (!(I2C1->ISR & I2C_ISR_STOPF));
  580              		.loc 1 142 3 is_stmt 1 view .LVU169
-ARM GAS  /tmp/ccDdqPoA.s 			page 14
+ARM GAS  /tmp/ccfc2z7L.s 			page 14
 
 
  581              	.L41:
@@ -811,28 +811,28 @@ ARM GAS  /tmp/ccDdqPoA.s 			page 1
  607              		.file 2 "/opt/gcc-arm-none-eabi/arm-none-eabi/include/machine/_default_types.h"
  608              		.file 3 "/opt/gcc-arm-none-eabi/arm-none-eabi/include/sys/_stdint.h"
  609              		.file 4 "Drivers/CMSIS/Device/ST/STM32F0xx/Include/stm32f042x6.h"
-ARM GAS  /tmp/ccDdqPoA.s 			page 15
+ARM GAS  /tmp/ccfc2z7L.s 			page 15
 
 
 DEFINED SYMBOLS
                             *ABS*:00000000 i2c.c
-     /tmp/ccDdqPoA.s:19     .text.i2c_init:00000000 $t
-     /tmp/ccDdqPoA.s:25     .text.i2c_init:00000000 i2c_init
-     /tmp/ccDdqPoA.s:160    .text.i2c_init:0000008c $d
-     /tmp/ccDdqPoA.s:172    .text.clear_flags:00000000 $t
-     /tmp/ccDdqPoA.s:178    .text.clear_flags:00000000 clear_flags
-     /tmp/ccDdqPoA.s:196    .text.clear_flags:00000008 $d
-     /tmp/ccDdqPoA.s:201    .text.i2c_send:00000000 $t
-     /tmp/ccDdqPoA.s:207    .text.i2c_send:00000000 i2c_send
-     /tmp/ccDdqPoA.s:358    .text.i2c_send:0000007c $d
-     /tmp/ccDdqPoA.s:364    .text.i2c_start_write:00000000 $t
-     /tmp/ccDdqPoA.s:370    .text.i2c_start_write:00000000 i2c_start_write
-     /tmp/ccDdqPoA.s:414    .text.i2c_start_write:00000024 $d
-     /tmp/ccDdqPoA.s:420    .text.i2c_write:00000000 $t
-     /tmp/ccDdqPoA.s:426    .text.i2c_write:00000000 i2c_write
-     /tmp/ccDdqPoA.s:521    .text.i2c_write:00000048 $d
-     /tmp/ccDdqPoA.s:528    .text.i2c_stop:00000000 $t
-     /tmp/ccDdqPoA.s:534    .text.i2c_stop:00000000 i2c_stop
-     /tmp/ccDdqPoA.s:600    .text.i2c_stop:0000003c $d
+     /tmp/ccfc2z7L.s:19     .text.i2c_init:00000000 $t
+     /tmp/ccfc2z7L.s:25     .text.i2c_init:00000000 i2c_init
+     /tmp/ccfc2z7L.s:160    .text.i2c_init:0000008c $d
+     /tmp/ccfc2z7L.s:172    .text.clear_flags:00000000 $t
+     /tmp/ccfc2z7L.s:178    .text.clear_flags:00000000 clear_flags
+     /tmp/ccfc2z7L.s:196    .text.clear_flags:00000008 $d
+     /tmp/ccfc2z7L.s:201    .text.i2c_send:00000000 $t
+     /tmp/ccfc2z7L.s:207    .text.i2c_send:00000000 i2c_send
+     /tmp/ccfc2z7L.s:358    .text.i2c_send:0000007c $d
+     /tmp/ccfc2z7L.s:364    .text.i2c_start_write:00000000 $t
+     /tmp/ccfc2z7L.s:370    .text.i2c_start_write:00000000 i2c_start_write
+     /tmp/ccfc2z7L.s:414    .text.i2c_start_write:00000024 $d
+     /tmp/ccfc2z7L.s:420    .text.i2c_write:00000000 $t
+     /tmp/ccfc2z7L.s:426    .text.i2c_write:00000000 i2c_write
+     /tmp/ccfc2z7L.s:521    .text.i2c_write:00000048 $d
+     /tmp/ccfc2z7L.s:528    .text.i2c_stop:00000000 $t
+     /tmp/ccfc2z7L.s:534    .text.i2c_stop:00000000 i2c_stop
+     /tmp/ccfc2z7L.s:600    .text.i2c_stop:0000003c $d
 
 NO UNDEFINED SYMBOLS

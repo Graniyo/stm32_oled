@@ -58,6 +58,7 @@ Core/Src/syscalls.c \
 Core/Src/tests.c \
 Core/Src/i2c.c \
 Core/Src/delay.c \
+Core/Src/DHT22.c \
 Core/Src/u8g2_port.c \
 Drivers/u8g2/csrc/u8g2_buffer.c \
 Drivers/u8g2/csrc/u8g2_setup.c \

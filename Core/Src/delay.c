@@ -1,5 +1,6 @@
 #include "delay.h"
 #include "stm32f0xx_hal.h"
+#include <stdint.h>
 
 void delay_ms(uint32_t ms) {
   HAL_Delay(ms);
@@ -14,4 +15,28 @@ void delay_us(uint32_t us) {
   while (count--) {
     __NOP();
   }
+}
+
+void tim2_init_1mhz(void){
+  // Init
+  RCC->APB1ENR |= RCC_APB1ENR_TIM2EN;
+
+  // Set prescaler
+  TIM2->PSC = 8 - 1;
+
+  // Reset CNT & force UEV (Update Event)
+  TIM2->CNT = 0;
+  TIM2->EGR = TIM_EGR_UG;
+
+  // Start timer 
+  TIM2->CR1 |= TIM_CR1_CEN;
+}
+
+void bare_delay_us(uint32_t us){
+  uint32_t start = TIM2->CNT;
+  while((uint32_t)(TIM2->CNT - start) < us);
+}
+
+uint32_t micros(){
+  return TIM2->CNT;
 }
