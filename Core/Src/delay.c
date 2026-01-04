@@ -37,6 +37,12 @@ void bare_delay_us(uint32_t us){
   while((uint32_t)(TIM2->CNT - start) < us);
 }
 
+void bare_delay_ms(uint32_t ms){
+  for(int i = 0; i < ms; i++){
+    bare_delay_us(1000);
+  }
+}
+
 uint32_t micros(){
   return TIM2->CNT;
 }
