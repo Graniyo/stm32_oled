@@ -1,78 +1,147 @@
+#include "DHT22.h"
 #include "delay.h"
 #include "stm32f042x6.h"
-#include <stdint.h>
 
-// Pin = 8
-// Port = GPIOA 
+// Pin = PA8
+// Port = GPIOA
 
-void init_dht22(void){
+static void configure_input(void);
+static void configure_output(void);
+static void output_low(void);
+static void output_high(void);
+
+void init_dht22(void) {
   // Enable clock to GPIOA
   RCC->AHBENR |= RCC_AHBENR_GPIOAEN;
 
   // Setup MODER 8 to output mode (01)
   GPIOA->MODER &= ~(3U << 16);
   GPIOA->MODER |= (1U << 16);
-  
+
   // Setup OTYPER = open drain (1)
   GPIOA->OTYPER |= (1U << 8);
 
   // Setup OSPEEDR = low speed (x0)
   GPIOA->OSPEEDR &= ~(3U << 16);
 
-  // Setup PUPDR = no PUPDR (00), use external resistor.
+  // Setup PUPDR = no PUPDR (00), use external resistor
   GPIOA->PUPDR &= ~(3U << 16);
+
+  // Start med linjen høy (idle)
+  output_high();
 }
 
-void configure_input(){
+static void configure_input(void) {
   // Setup MODER 8 to input mode (00)
   GPIOA->MODER &= ~(3U << 16);
- 
-  // Setup PUPDR = no PUPDR (00), use external resistor.
+
+  // Setup PUPDR = no PUPDR (00), use external resistor
   GPIOA->PUPDR &= ~(3U << 16);
 }
 
-void output_low(void){
+static void configure_output(void) {
+  // Setup MODER 8 to output mode (01)
+  GPIOA->MODER &= ~(3U << 16);
+  GPIOA->MODER |= (1U << 16);
+
+  // Setup OTYPER = open drain (1)
+  GPIOA->OTYPER |= (1U << 8);
+
+  // Setup OSPEEDR = low speed (x0)
+  GPIOA->OSPEEDR &= ~(3U << 16);
+
+  // Setup PUPDR = no PUPDR (00), use external resistor
+  GPIOA->PUPDR &= ~(3U << 16);
+}
+
+static void output_low(void) {
   GPIOA->BSRR = (1U << 24);
 }
 
-void output_high(void){
+static void output_high(void) {
   GPIOA->BSRR = (1U << 8);
 }
 
-void get_dht22_data(void){
-  uint32_t t0, ts;
-  uint32_t data[40];
+int get_dht22_data(int16_t *temperature, int16_t *humidity) {
+  uint32_t t0;
+  uint8_t data[5] = {0};
+  uint32_t timeout;
 
-  // Set output low 20ms
+  configure_output();
   output_low();
   bare_delay_ms(20);
-  
-  //Configure pin to INPUT
+
+  // Deaktiver interrupts for presis timing
+  __disable_irq();
+
+  output_high();
+  bare_delay_us(30);
+
   configure_input();
 
-  // Wait until low
-  while(GPIOA->IDR & (1U << 8));
+  // Vent på DHT22 LAV respons (80us) med timeout
+  timeout = 1000;
+  while ((GPIOA->IDR & (1U << 8)) && --timeout);
+  if (!timeout) {
+    __enable_irq();
+    return -1;
+  }
 
-  // Wait until HIGH
-  while(!(GPIOA->IDR & (1U << 8)));
+  // Vent på DHT22 HØY (80us)
+  timeout = 1000;
+  while (!(GPIOA->IDR & (1U << 8)) && --timeout);
+  if (!timeout) {
+    __enable_irq();
+    return -1;
+  }
 
-  //loop through bits, solve 1's and 0's
-  for(int i = 0; i < 40; i++){
-    // Wait until low
-    while(GPIOA->IDR & (1U << 8));
+  // Les 40 bits
+  for (int i = 0; i < 40; i++) {
+    // Vent på LAV (50us forberedelse)
+    timeout = 1000;
+    while ((GPIOA->IDR & (1U << 8)) && --timeout);
+    if (!timeout) {
+      __enable_irq();
+      return -1;
+    }
 
-    // Wait until high, get current time 
-    while(!(GPIOA->IDR & (1U << 8)));
+    // Vent på HØY (start av databit)
+    timeout = 1000;
+    while (!(GPIOA->IDR & (1U << 8)) && --timeout);
+    if (!timeout) {
+      __enable_irq();
+      return -1;
+    }
+
     t0 = micros();
 
-    // Wait until low, calculate time difference
-    while(GPIOA->IDR & (1U << 8));
-    ts = micros() - t0;
+    // Vent på LAV (slutt av databit)
+    timeout = 1000;
+    while ((GPIOA->IDR & (1U << 8)) && --timeout);
 
-    if(ts > 50){
-      data[i] = 1;
-    } else {
-      data[i] = 0;
+    // 26-28us = 0, 70us = 1
+    if (micros() - t0 > 50) {
+      data[i / 8] |= (1 << (7 - (i % 8)));
     }
   }
+
+  __enable_irq();
+
+  // Sett tilbake til output høy (idle)
+  configure_output();
+  output_high();
+
+  // Verifiser checksum
+  if (data[4] != ((data[0] + data[1] + data[2] + data[3]) & 0xFF)) {
+    return -2;
+  }
+
+  // Konverter til temperatur og fuktighet (i tiendeler)
+  *humidity = (data[0] << 8) | data[1];
+  *temperature = ((data[2] & 0x7F) << 8) | data[3];
+  if (data[2] & 0x80) {
+    *temperature = -*temperature;  // Negativ temperatur
+  }
+
+  return 0;
 }

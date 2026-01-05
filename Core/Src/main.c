@@ -11,11 +11,12 @@
 void SystemClock_Config(void);
 
 int main(void) {
-  //HAL_Init();
+  HAL_Init();
   SystemClock_Config();
   onboard_led_init();
   i2c_init();
   tim2_init_1mhz();
+  init_dht22();
   u8g2_t *u8g2 = u8g2_port_init();
 
   // Get text width for smooth wrapping
@@ -24,8 +25,6 @@ int main(void) {
   int16_t text_width = u8g2_GetStrWidth(u8g2, text);
   uint16_t middle_screen_pos = (128/2) - (text_width/2);
 
-  uint32_t start = 0;
-  uint32_t stop = 0;
   char buf[16];
 
   u8g2_ClearBuffer(u8g2);
@@ -35,19 +34,36 @@ int main(void) {
 
 
 
+  int16_t temperature = 0;
+  int16_t humidity = 0;
+  int dht_status = 0;
+
   while (1) {
-
-    start = micros();
-    //bare_delay_us(5000);
     onboard_led_toggle();
-    u8g2_ClearBuffer(u8g2);
-    snprintf(buf, sizeof(buf), "t = %lu us", (unsigned long)micros());
-    text_width = u8g2_GetStrWidth(u8g2, buf);
-    middle_screen_pos = (128/2) - (text_width/2);
 
-    u8g2_DrawStr(u8g2, middle_screen_pos, 38, buf);
+    // Les DHT22-data
+    dht_status = get_dht22_data(&temperature, &humidity);
+
+    u8g2_ClearBuffer(u8g2);
+
+    if (dht_status == 0) {
+      // Vis temperatur (tiendeler -> grader)
+      snprintf(buf, sizeof(buf), "T: %d.%d C", temperature / 10, temperature % 10);
+      u8g2_DrawStr(u8g2, 0, 20, buf);
+
+      // Vis fuktighet
+      snprintf(buf, sizeof(buf), "H: %d.%d %%", humidity / 10, humidity % 10);
+      u8g2_DrawStr(u8g2, 0, 40, buf);
+    } else if (dht_status == -1) {
+      u8g2_DrawStr(u8g2, 0, 30, "DHT22: Timeout");
+    } else {
+      u8g2_DrawStr(u8g2, 0, 30, "DHT22: CRC feil");
+    }
 
     u8g2_SendBuffer(u8g2);
+
+    // DHT22 krever minst 2 sekunder mellom avlesninger
+    bare_delay_ms(2000);
   }
 }
 
