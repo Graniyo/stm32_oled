@@ -37,24 +37,28 @@ int main(void) {
   int16_t temperature = 0;
   int16_t humidity = 0;
   int dht_status = 0;
+  int dht_status_struct = 0;
+
+  dht22 sensor;
 
   while (1) {
     onboard_led_toggle();
 
     // Les DHT22-data
-    dht_status = get_dht22_data(&temperature, &humidity);
+    //dht_status = get_dht22_data(&temperature, &humidity);
+    dht_status_struct = get_dht22_data_struct(&sensor);
 
     u8g2_ClearBuffer(u8g2);
 
-    if (dht_status == 0) {
+    if (dht_status_struct == 0) {
       // Vis temperatur (tiendeler -> grader)
-      snprintf(buf, sizeof(buf), "T: %d.%d C", temperature / 10, temperature % 10);
+      snprintf(buf, sizeof(buf), "T: %d.%d C", sensor.temperature / 10, sensor.temperature % 10);
       u8g2_DrawStr(u8g2, 0, 20, buf);
 
       // Vis fuktighet
-      snprintf(buf, sizeof(buf), "H: %d.%d %%", humidity / 10, humidity % 10);
+      snprintf(buf, sizeof(buf), "H: %d.%d %%", sensor.humidity / 10, sensor.humidity % 10);
       u8g2_DrawStr(u8g2, 0, 40, buf);
-    } else if (dht_status == -1) {
+    } else if (dht_status_struct == -1) {
       u8g2_DrawStr(u8g2, 0, 30, "DHT22: Timeout");
     } else {
       u8g2_DrawStr(u8g2, 0, 30, "DHT22: CRC feil");

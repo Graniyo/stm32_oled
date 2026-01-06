@@ -145,3 +145,88 @@ int get_dht22_data(int16_t *temperature, int16_t *humidity) {
 
   return 0;
 }
+
+
+int get_dht22_data_struct(dht22 *data){
+  uint32_t t0;
+  uint8_t raw[5] = {0};
+  uint32_t timeout;
+
+  configure_output();
+  output_low();
+  bare_delay_ms(20);
+
+  // Deaktiver interrupts for presis timing
+  __disable_irq();
+
+  output_high();
+  bare_delay_us(30);
+
+  configure_input();
+
+  // Vent på DHT22 LAV respons (80us) med timeout
+  timeout = 1000;
+  while ((GPIOA->IDR & (1U << 8)) && --timeout);
+  if (!timeout) {
+    __enable_irq();
+    return -1;
+  }
+
+  // Vent på DHT22 HØY (80us)
+  timeout = 1000;
+  while (!(GPIOA->IDR & (1U << 8)) && --timeout);
+  if (!timeout) {
+    __enable_irq();
+    return -1;
+  }
+
+  // Les 40 bits
+  for (int i = 0; i < 40; i++) {
+    // Vent på LAV (50us forberedelse)
+    timeout = 1000;
+    while ((GPIOA->IDR & (1U << 8)) && --timeout);
+    if (!timeout) {
+      __enable_irq();
+      return -1;
+    }
+
+    // Vent på HØY (start av databit)
+    timeout = 1000;
+    while (!(GPIOA->IDR & (1U << 8)) && --timeout);
+    if (!timeout) {
+      __enable_irq();
+      return -1;
+    }
+
+    t0 = micros();
+
+    // Vent på LAV (slutt av databit)
+    timeout = 1000;
+    while ((GPIOA->IDR & (1U << 8)) && --timeout);
+
+    // 26-28us = 0, 70us = 1
+    if (micros() - t0 > 50) {
+      raw[i / 8] |= (1 << (7 - (i % 8)));
+    }
+  }
+
+  __enable_irq();
+
+  // Sett tilbake til output høy (idle)
+  configure_output();
+  output_high();
+
+  // Verifiser checksum
+  if (raw[4] != ((raw[0] + raw[1] + raw[2] + raw[3]) & 0xFF)) {
+    return -2;
+  }
+
+  // Konverter til temperatur og fuktighet (i tiendeler)
+  data->humidity = (raw[0] << 8) | raw[1];
+  data->temperature = ((raw[2] & 0x7F) << 8) | raw[3];
+  if (raw[2] & 0x80) {
+    data->temperature = -data->temperature;  // Negativ temperatur
+  }
+
+  return 0;
+}
