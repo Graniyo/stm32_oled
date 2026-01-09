@@ -1,4 +1,3 @@
-#include <stdio.h>
 #include "main.h"
 #include "i2c.h"
 #include "stm32f0xx_hal.h"
@@ -7,6 +6,7 @@
 #include "u8g2.h"
 #include "delay.h"
 #include "DHT22.h"
+#include "application.h"
 
 void SystemClock_Config(void);
 
@@ -17,54 +17,27 @@ int main(void) {
   i2c_init();
   tim2_init_1mhz();
   init_dht22();
+
   u8g2_t *u8g2 = u8g2_port_init();
+  dht22_t sensor;
+  positions_t positions;
 
-  // Get text width for smooth wrapping
-  u8g2_SetFont(u8g2, u8g2_font_helvB12_tr);
-  const char *text = "Martin Grani";
-  int16_t text_width = u8g2_GetStrWidth(u8g2, text);
-  uint16_t middle_screen_pos = (128/2) - (text_width/2);
+  positions.hi_pos_x = 10;
+  positions.hi_pos_y = 22;
 
-  char buf[16];
+  positions.low_pos_x = 10;
+  positions.low_pos_y = 54;
 
-  u8g2_ClearBuffer(u8g2);
-  u8g2_DrawStr(u8g2, middle_screen_pos, 38, text);
-  u8g2_SendBuffer(u8g2);
+  positions.main_pos_x = 75;
+  positions.main_pos_y = 38;
 
-
-
-
-  int16_t temperature = 0;
-  int16_t humidity = 0;
-  int dht_status = 0;
-  int dht_status_struct = 0;
-
-  dht22 sensor;
+  sensor.hi_temp = 500;
+  sensor.low_temp = 150;
 
   while (1) {
     onboard_led_toggle();
-
-    // Les DHT22-data
-    //dht_status = get_dht22_data(&temperature, &humidity);
-    dht_status_struct = get_dht22_data_struct(&sensor);
-
-    u8g2_ClearBuffer(u8g2);
-
-    if (dht_status_struct == 0) {
-      // Vis temperatur (tiendeler -> grader)
-      snprintf(buf, sizeof(buf), "T: %d.%d C", sensor.temperature / 10, sensor.temperature % 10);
-      u8g2_DrawStr(u8g2, 0, 20, buf);
-
-      // Vis fuktighet
-      snprintf(buf, sizeof(buf), "H: %d.%d %%", sensor.humidity / 10, sensor.humidity % 10);
-      u8g2_DrawStr(u8g2, 0, 40, buf);
-    } else if (dht_status_struct == -1) {
-      u8g2_DrawStr(u8g2, 0, 30, "DHT22: Timeout");
-    } else {
-      u8g2_DrawStr(u8g2, 0, 30, "DHT22: CRC feil");
-    }
-
-    u8g2_SendBuffer(u8g2);
+    get_dht22_data_struct(&sensor);
+    temperature_draw(u8g2, &positions, &sensor);
 
     // DHT22 krever minst 2 sekunder mellom avlesninger
     bare_delay_ms(2000);

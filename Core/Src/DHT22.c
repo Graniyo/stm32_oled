@@ -147,7 +147,7 @@ int get_dht22_data(int16_t *temperature, int16_t *humidity) {
 }
 
 
-int get_dht22_data_struct(dht22 *data){
+int get_dht22_data_struct(dht22_t *data){
   uint32_t t0;
   uint8_t raw[5] = {0};
   uint32_t timeout;
@@ -230,3 +230,5 @@ int get_dht22_data_struct(dht22 *data){
 
   return 0;
 }
+
+

@@ -1,4 +1,4 @@
-ARM GAS  /tmp/ccvpmgyO.s 			page 1
+ARM GAS  /tmp/ccRuKSRU.s 			page 1
 
 
    1              		.cpu cortex-m0
@@ -58,7 +58,7 @@ ARM GAS  /tmp/ccvpmgyO.s 			page 1
   49              		.loc 1 7 3 is_stmt 1 view .LVU7
   50              		.loc 1 7 8 is_stmt 0 view .LVU8
   51 0016 1A68     		ldr	r2, [r3]
-ARM GAS  /tmp/ccvpmgyO.s 			page 2
+ARM GAS  /tmp/ccRuKSRU.s 			page 2
 
 
   52              		.loc 1 7 16 view .LVU9
@@ -113,16 +113,16 @@ ARM GAS  /tmp/ccvpmgyO.s 			page 1
  101              		.file 2 "/opt/gcc-arm-none-eabi/arm-none-eabi/include/machine/_default_types.h"
  102              		.file 3 "/opt/gcc-arm-none-eabi/arm-none-eabi/include/sys/_stdint.h"
  103              		.file 4 "Drivers/CMSIS/Device/ST/STM32F0xx/Include/stm32f042x6.h"
-ARM GAS  /tmp/ccvpmgyO.s 			page 3
+ARM GAS  /tmp/ccRuKSRU.s 			page 3
 
 
 DEFINED SYMBOLS
                             *ABS*:00000000 tests.c
-     /tmp/ccvpmgyO.s:19     .text.onboard_led_init:00000000 $t
-     /tmp/ccvpmgyO.s:25     .text.onboard_led_init:00000000 onboard_led_init
-     /tmp/ccvpmgyO.s:62     .text.onboard_led_init:00000020 $d
-     /tmp/ccvpmgyO.s:68     .text.onboard_led_toggle:00000000 $t
-     /tmp/ccvpmgyO.s:74     .text.onboard_led_toggle:00000000 onboard_led_toggle
-     /tmp/ccvpmgyO.s:95     .text.onboard_led_toggle:0000000c $d
+     /tmp/ccRuKSRU.s:19     .text.onboard_led_init:00000000 $t
+     /tmp/ccRuKSRU.s:25     .text.onboard_led_init:00000000 onboard_led_init
+     /tmp/ccRuKSRU.s:62     .text.onboard_led_init:00000020 $d
+     /tmp/ccRuKSRU.s:68     .text.onboard_led_toggle:00000000 $t
+     /tmp/ccRuKSRU.s:74     .text.onboard_led_toggle:00000000 onboard_led_toggle
+     /tmp/ccRuKSRU.s:95     .text.onboard_led_toggle:0000000c $d
 
 NO UNDEFINED SYMBOLS
