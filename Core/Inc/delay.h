@@ -9,5 +9,6 @@ void tim2_init_1mhz(void);
 void bare_delay_us(uint32_t us);
 void bare_delay_ms(uint32_t ms);
 uint32_t micros(void);
+void tim3_init_1min(void);
 
 #endif

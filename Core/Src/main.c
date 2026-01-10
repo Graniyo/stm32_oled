@@ -10,17 +10,21 @@
 
 void SystemClock_Config(void);
 
+volatile uint8_t dht22_due = 0;
+
 int main(void) {
   HAL_Init();
   SystemClock_Config();
   onboard_led_init();
   i2c_init();
   tim2_init_1mhz();
+  tim3_init_1min();
   init_dht22();
 
   u8g2_t *u8g2 = u8g2_port_init();
   dht22_t sensor;
   positions_t positions;
+
 
   positions.hi_pos_x = 10;
   positions.hi_pos_y = 22;
@@ -35,8 +39,11 @@ int main(void) {
   sensor.low_temp = 150;
 
   while (1) {
-    onboard_led_toggle();
-    get_dht22_data_struct(&sensor);
+    if(dht22_due == 1){
+      dht22_due = 0;
+      get_dht22_data_struct(&sensor);
+      onboard_led_toggle();
+    }
     temperature_draw(u8g2, &positions, &sensor);
 
     // DHT22 krever minst 2 sekunder mellom avlesninger
@@ -64,6 +71,13 @@ void SystemClock_Config(void) {
 
   if (HAL_RCC_ClockConfig(&RCC_ClkInitStruct, FLASH_LATENCY_0) != HAL_OK) {
     Error_Handler();
+  }
+}
+
+void TIM3_IRQHandler(void){
+  if(TIM3->SR & TIM_SR_UIF){
+    TIM3->SR &= ~TIM_SR_UIF;
+    dht22_due = 1;
   }
 }
 
