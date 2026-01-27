@@ -12,6 +12,7 @@ typedef struct {
   char humidity_text[8];
   char hi_temp_text[8];
   char low_temp_text[8];
+  uint8_t initalized;
 } dht22_t;
 
 // Returverdier:

@@ -22,7 +22,7 @@ int main(void) {
   init_dht22();
 
   u8g2_t *u8g2 = u8g2_port_init();
-  dht22_t sensor;
+  dht22_t sensor = {0};
   positions_t positions;
 
 
@@ -35,13 +35,12 @@ int main(void) {
   positions.main_pos_x = 75;
   positions.main_pos_y = 38;
 
-  sensor.hi_temp = 500;
-  sensor.low_temp = 150;
 
   while (1) {
     if(dht22_due == 1){
       dht22_due = 0;
       get_dht22_data_struct(&sensor);
+      check_hi_low(&sensor);
       onboard_led_toggle();
     }
     temperature_draw(u8g2, &positions, &sensor);

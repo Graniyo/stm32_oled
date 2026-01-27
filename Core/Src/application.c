@@ -36,6 +36,23 @@ void convert_string(dht22_t *dht) {
   snprintf(dht->low_temp_text, sizeof(dht->low_temp_text), "%d.%d", low_temp / 10, low_temp % 10);
 }
 
+void check_hi_low(dht22_t *dht22){
+
+  if(!dht22->initalized){
+    dht22->hi_temp = dht22->temperature;
+    dht22->low_temp = dht22->temperature;
+    dht22->initalized = 1;
+  }
+
+  if (dht22->temperature > dht22->hi_temp) {
+    dht22->hi_temp = dht22->temperature;
+  }
+
+  if (dht22->temperature < dht22->low_temp) {
+    dht22->low_temp = dht22->temperature;
+  }
+}
+
 
 
 

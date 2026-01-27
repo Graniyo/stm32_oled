@@ -17,3 +17,4 @@ typedef struct{
 
 void temperature_draw( u8g2_t *u8g2, positions_t *box, dht22_t *dht22);
 void convert_string(dht22_t *dht);
+void check_hi_low(dht22_t *dht22);
