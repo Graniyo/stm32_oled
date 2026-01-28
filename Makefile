@@ -60,6 +60,7 @@ Core/Src/i2c.c \
 Core/Src/delay.c \
 Core/Src/DHT22.c \
 Core/application.c \
+Core/hdc1080.c \
 Core/Src/u8g2_port.c \
 Drivers/u8g2/csrc/u8g2_buffer.c \
 Drivers/u8g2/csrc/u8g2_setup.c \
