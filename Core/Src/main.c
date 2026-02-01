@@ -5,12 +5,12 @@
 #include "u8g2_port.h"
 #include "u8g2.h"
 #include "delay.h"
-#include "DHT22.h"
+#include "hdc1080.h"
 #include "application.h"
 
 void SystemClock_Config(void);
 
-volatile uint8_t dht22_due = 0;
+volatile uint8_t sensor_due = 0;
 
 int main(void) {
   HAL_Init();
@@ -19,12 +19,11 @@ int main(void) {
   i2c_init();
   tim2_init_1mhz();
   tim3_init_1min();
-  init_dht22();
+  hdc1080_init();
 
   u8g2_t *u8g2 = u8g2_port_init();
-  dht22_t sensor = {0};
+  hdc1080_t sensor = {0};
   positions_t positions;
-
 
   positions.hi_pos_x = 10;
   positions.hi_pos_y = 22;
@@ -35,17 +34,15 @@ int main(void) {
   positions.main_pos_x = 75;
   positions.main_pos_y = 38;
 
-
   while (1) {
-    if(dht22_due == 1){
-      dht22_due = 0;
-      get_dht22_data_struct(&sensor);
-      check_hi_low(&sensor);
+    if (sensor_due == 1) {
+      sensor_due = 0;
+      hdc1080_read(&sensor);
+      hdc1080_check_hi_low(&sensor);
       onboard_led_toggle();
     }
-    temperature_draw(u8g2, &positions, &sensor);
+    hdc1080_temperature_draw(u8g2, &positions, &sensor);
 
-    // DHT22 krever minst 2 sekunder mellom avlesninger
     bare_delay_ms(2000);
   }
 }
@@ -76,7 +73,7 @@ void SystemClock_Config(void) {
 void TIM3_IRQHandler(void){
   if(TIM3->SR & TIM_SR_UIF){
     TIM3->SR &= ~TIM_SR_UIF;
-    dht22_due = 1;
+    sensor_due = 1;
   }
 }
 

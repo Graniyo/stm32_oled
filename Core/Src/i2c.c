@@ -142,3 +142,75 @@ void i2c_stop(void) {
   while (!(I2C1->ISR & I2C_ISR_STOPF));
   I2C1->ICR = I2C_ICR_STOPCF;
 }
+
+void i2c_write_reg(uint8_t address, uint8_t reg) {
+  // Wait until bus is not busy
+  while (I2C1->ISR & I2C_ISR_BUSY);
+
+  // Clear STOP and NACK flags
+  clear_flags();
+
+  // Clear fields
+  I2C1->CR2 &= ~(I2C_CR2_SADD | I2C_CR2_NBYTES | I2C_CR2_RD_WRN |
+                 I2C_CR2_RELOAD | I2C_CR2_AUTOEND);
+
+  // Configure transfer: address, 1 byte, write, AUTOEND
+  I2C1->CR2 |= ((uint32_t)(address << 1) << I2C_CR2_SADD_Pos);
+  I2C1->CR2 |= (1 << I2C_CR2_NBYTES_Pos);
+  I2C1->CR2 |= I2C_CR2_AUTOEND;
+
+  // Start
+  I2C1->CR2 |= I2C_CR2_START;
+
+  // Wait for TXIS
+  while (!(I2C1->ISR & I2C_ISR_TXIS)) {
+    if (I2C1->ISR & I2C_ISR_NACKF) {
+      I2C1->ICR = I2C_ICR_NACKCF;
+      return;
+    }
+  }
+
+  // Write register address
+  I2C1->TXDR = reg;
+
+  // Wait for STOP
+  while (!(I2C1->ISR & I2C_ISR_STOPF));
+  I2C1->ICR = I2C_ICR_STOPCF;
+}
+
+void i2c_read(uint8_t address, uint8_t *data, uint8_t length) {
+  // Wait until bus is not busy
+  while (I2C1->ISR & I2C_ISR_BUSY);
+
+  // Clear STOP and NACK flags
+  clear_flags();
+
+  // Clear fields
+  I2C1->CR2 &= ~(I2C_CR2_SADD | I2C_CR2_NBYTES | I2C_CR2_RD_WRN |
+                 I2C_CR2_RELOAD | I2C_CR2_AUTOEND);
+
+  // Configure transfer: address, NBYTES, read, AUTOEND
+  I2C1->CR2 |= ((uint32_t)(address << 1) << I2C_CR2_SADD_Pos);
+  I2C1->CR2 |= ((uint32_t)length << I2C_CR2_NBYTES_Pos);
+  I2C1->CR2 |= I2C_CR2_RD_WRN;  // Read mode
+  I2C1->CR2 |= I2C_CR2_AUTOEND;
+
+  // Start
+  I2C1->CR2 |= I2C_CR2_START;
+
+  // Read bytes
+  for (uint8_t i = 0; i < length; i++) {
+    // Wait for RXNE
+    while (!(I2C1->ISR & I2C_ISR_RXNE)) {
+      if (I2C1->ISR & I2C_ISR_NACKF) {
+        I2C1->ICR = I2C_ICR_NACKCF;
+        return;
+      }
+    }
+    data[i] = I2C1->RXDR;
+  }
+
+  // Wait for STOP
+  while (!(I2C1->ISR & I2C_ISR_STOPF));
+  I2C1->ICR = I2C_ICR_STOPCF;
+}

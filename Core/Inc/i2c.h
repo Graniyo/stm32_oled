@@ -13,3 +13,7 @@ void i2c_send(uint8_t address, uint8_t data[], uint8_t length);
 void i2c_start_write(uint8_t address);
 void i2c_write(uint8_t *data, uint8_t len);
 void i2c_stop(void);
+
+// I2C read functions
+void i2c_write_reg(uint8_t address, uint8_t reg);
+void i2c_read(uint8_t address, uint8_t *data, uint8_t length);
