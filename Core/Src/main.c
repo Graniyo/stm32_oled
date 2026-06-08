@@ -8,6 +8,9 @@
 #include "hdc1080.h"
 #include "application.h"
 
+#define ANCHOR_POSITION_X 15
+#define ANCHOR_POSITION_Y 25
+
 void SystemClock_Config(void);
 
 volatile uint8_t sensor_due = 0;
@@ -25,14 +28,7 @@ int main(void) {
   hdc1080_t sensor = {0};
   positions_t positions;
 
-  positions.hi_pos_x = 10;
-  positions.hi_pos_y = 22;
-
-  positions.low_pos_x = 10;
-  positions.low_pos_y = 54;
-
-  positions.main_pos_x = 75;
-  positions.main_pos_y = 38;
+  init_positions(&positions, ANCHOR_POSITION_X, ANCHOR_POSITION_Y);
 
   while (1) {
     if (sensor_due == 1) {

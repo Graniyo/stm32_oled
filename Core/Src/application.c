@@ -8,6 +8,20 @@
 #define WIDTH 128
 #define HEIGHT 64 
 
+void init_positions(positions_t *positions, uint8_t ANCHOR_POSITION_X, uint8_t ANCHOR_POSITION_Y){
+  positions->hi_pos_x = ANCHOR_POSITION_X;
+  positions->hi_pos_y = ANCHOR_POSITION_Y;
+  positions->hi_text_x = ANCHOR_POSITION_X + 35;
+  positions->hi_text_y = ANCHOR_POSITION_Y;
+
+  positions->low_pos_x = ANCHOR_POSITION_X;
+  positions->low_pos_y = ANCHOR_POSITION_Y + 32;
+  positions->low_text_x = ANCHOR_POSITION_X + 35;
+  positions->low_text_y = ANCHOR_POSITION_Y + 32;
+
+  positions->main_pos_x = ANCHOR_POSITION_X + 65; 
+  positions->main_pos_y = ANCHOR_POSITION_Y + 16;
+}
 
 void temperature_draw( u8g2_t *u8g2, positions_t *box, dht22_t *dht22){
   convert_string(dht22);
@@ -59,7 +73,12 @@ void hdc1080_temperature_draw(u8g2_t *u8g2, positions_t *box, hdc1080_t *hdc) {
   u8g2_SetFont(u8g2, u8g2_font_helvB12_tr);
   u8g2_ClearBuffer(u8g2);
   u8g2_DrawStr(u8g2, box->hi_pos_x, box->hi_pos_y, hdc->hi_temp_text);
+  u8g2_DrawStr(u8g2, box->hi_text_x, box->hi_text_y, "HI");
+
+  
   u8g2_DrawStr(u8g2, box->low_pos_x, box->low_pos_y, hdc->low_temp_text);
+  u8g2_DrawStr(u8g2, box->low_text_x, box->low_text_y, "LOW");
+
   u8g2_DrawStr(u8g2, box->main_pos_x, box->main_pos_y, hdc->temperature_text);
   u8g2_SendBuffer(u8g2);
 }
@@ -96,6 +115,10 @@ void hdc1080_check_hi_low(hdc1080_t *hdc) {
     hdc->low_temp = hdc->temperature;
   }
 }
+
+
+
+
 
 
 
